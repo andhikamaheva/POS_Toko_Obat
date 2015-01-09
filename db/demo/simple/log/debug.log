@@ -1,0 +1,38 @@
+**** Debug log started: Wed Jun 25 01:18:06 PDT 2003 ****
+% Storage System: v1 file storage mode.
+% Internal Data Cache size:          2097152
+% Internal Data Cache max cell size: 8192
+% lookup_comparison_list = false
+% read_only = false
+% transaction_error_on_dirty_select = true
+% ignore_case_for_identifiers = false
+% Java NIO API is available.
+% io_safety_level = 10
+% Using stardard IO API for heap buffered file access.
+% [Buffer Manager] Using IO API: Java IO
+% [Buffer Manager] Page Size: 8192
+% [Buffer Manager] Max pages: 256
+% Using Java regex API.
+% No 'function_factories' config property found.
+% statement_cache = true
+% Max worker threads set to: 2
+% Starting Database Server
+**** Debug log started: Wed Jun 25 01:18:08 PDT 2003 ****
+% Storage System: v1 file storage mode.
+% Internal Data Cache size:          2097152
+% Internal Data Cache max cell size: 8192
+% lookup_comparison_list = false
+% read_only = false
+% transaction_error_on_dirty_select = true
+% ignore_case_for_identifiers = false
+% Java NIO API is available.
+% io_safety_level = 10
+% Using stardard IO API for heap buffered file access.
+% [Buffer Manager] Using IO API: Java IO
+% [Buffer Manager] Page Size: 8192
+% [Buffer Manager] Max pages: 256
+% Using Java regex API.
+% No 'function_factories' config property found.
+% statement_cache = true
+% Max worker threads set to: 2
+% Starting Database Server

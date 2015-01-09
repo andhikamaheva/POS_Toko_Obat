@@ -1,0 +1,120 @@
+
+switch to connection c1;
+set auto commit off;
+switch to connection c2;
+set auto commit off;
+switch to connection c3;
+set auto commit off;
+
+switch to connection c1;
+
+create table TransactionTest (
+  "col1" LONGVARCHAR
+);
+insert into TransactionTest ( col1 )
+       values ( '5' ), ( '10' ), ( '20' ), ( '1' );
+commit;
+
+switch to connection c2;
+select * from TransactionTest order by col1;
+// Alter the table ;
+alter table TransactionTest add col2 NUMERIC DEFAULT 10.5;
+select * from TransactionTest order by col1;
+
+// Switch back to connection c1 ;
+switch to connection c1;
+// This connection should see the unaltered table... ;
+select * from TransactionTest;
+
+// Switch back to connection c2 and commit the altered table ;
+switch to connection c2;
+commit;
+
+// Switch back to connection c1
+// We should still see the old table because c1 has been isolated from
+// all changes made by c2 ;
+switch to connection c1;
+select * from TransactionTest;
+
+// If we commit c1 (c1 has been a read only transaction so no conflicts)
+// we should see the new altered TransactionTest. ;
+commit;
+select * from TransactionTest;
+commit;
+
+// Concurrently add some data on c1 and c2.  This will not cause any conflicts. ;
+switch to connection c1;
+insert into TransactionTest ( col1 )
+       values ( '12' ), ( '100' );
+switch to connection c2;
+insert into TransactionTest ( col1, col2 )
+       values ( '26', 50 ), ( '136', 99.99 );
+switch to connection c1;
+insert into TransactionTest ( col1, col2 )
+       values ( '54', 50 ), ( '988', 99.99 );
+switch to connection c2;
+insert into TransactionTest ( col1 )
+       values ( '127' ), ( '188' );
+commit;
+switch to connection c1;
+commit;
+select * from TransactionTest;
+commit;
+
+// Change data in the table then rollback. ;
+insert into TransactionTest ( col1, col2 )
+   select col1, col2 + 1000 from TransactionTest;
+insert into TransactionTest ( col1, col2 )
+   select concat('1-', col1), col2 from TransactionTest;
+select * from TransactionTest;
+delete from TransactionTest where col1 like '1%';
+select * from TransactionTest;
+// Rollback the changes, ;
+rollback;
+select * from TransactionTest;
+commit;
+
+// Test of the transaction conflicts... ;
+// Insert data on c1, drop in c2, commit in c1 then commit in c2, ;
+switch to connection c1;
+insert into TransactionTest ( col1)
+       values ( '1' ), ( '2' ), ( '1000' );
+switch to connection c2;
+drop table TransactionTest;
+switch to connection c1;
+commit;
+switch to connection c2;
+commit;
+
+// Select and modify on changed table,
+// Insert data on c1, update in c2, commit in c1 then commit in c2, ;
+switch to connection c1;
+insert into TransactionTest ( col1)
+       values ( '10' ), ( '20' ), ( '100' );
+select * from TransactionTest;
+switch to connection c2;
+update TransactionTest set col1 = concat('1-', col1);
+select * from TransactionTest;
+switch to connection c1;
+commit;
+switch to connection c2;
+commit;
+
+// Modify a dropped table, ;
+switch to connection c1;
+drop table TransactionTest;
+switch to connection c2;
+select * from TransactionTest;
+update TransactionTest set col1 = concat('1-', col1);
+switch to connection c1;
+commit;
+switch to connection c2;
+commit;
+
+
+
+
+
+
+
+

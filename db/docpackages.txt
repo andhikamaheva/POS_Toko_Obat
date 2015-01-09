@@ -1,0 +1,14 @@
+com.mckoi
+com.mckoi.database
+com.mckoi.database.global
+com.mckoi.database.interpret
+com.mckoi.database.jdbc
+com.mckoi.database.jdbcserver
+com.mckoi.database.parser
+com.mckoi.database.control
+com.mckoi.database.sql
+com.mckoi.debug
+com.mckoi.jfccontrols
+com.mckoi.runtime
+com.mckoi.tools
+com.mckoi.util
