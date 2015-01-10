@@ -151,6 +151,9 @@ public class Masuk extends JFrame {
 					utama.setVisible(true);
 					utama.tmbUser.setVisible(false);
 					utama.editUser.setVisible(false);
+					utama.mSupp.setVisible(false);
+					utama.mProduk.setVisible(false);
+					
 					user = txtUser.getText();
 				}
 			}

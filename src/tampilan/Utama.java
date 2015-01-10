@@ -6,8 +6,10 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.text.PlainDocument;
 
 import database.Config;
+import database.dbDTransaksi;
 import database.dbProducts;
 import database.dbSupplier;
+import database.dbTransaksi;
 
 import java.awt.*;
 import java.awt.Dialog.ModalityType;
@@ -49,6 +51,8 @@ public class Utama extends JFrame {
 	
 	public Masuk ms = new Masuk("");
 	public dbProducts dp = new dbProducts();
+	public dbTransaksi trans = new dbTransaksi();
+	public dbDTransaksi dtrans = new dbDTransaksi();
 	private JPanel panelTitle = new JPanel();
 	private JPanel panelTengah = new JPanel();
 	private JPanel panelReport = new JPanel();
@@ -80,8 +84,6 @@ public class Utama extends JFrame {
 
 	// Master Laporan
 	public JMenu mReport = new JMenu("Report");
-	public JMenuItem rSupp = new JMenuItem("Report Supplier");
-	public JMenuItem rProd = new JMenuItem("Report Produk");
 	public JMenuItem rSales = new JMenuItem("Report Penjualan");
 
 	// Report
@@ -230,8 +232,6 @@ public class Utama extends JFrame {
 
 		// Master Report
 		menu.add(mReport);
-		mReport.add(rSupp);
-		mReport.add(rProd);
 		mReport.add(rSales);
 
 		// Function Tombol Administrator
@@ -252,6 +252,9 @@ public class Utama extends JFrame {
 		// Function Cari
 		cariBarangKode();
 		cariBarangNama();
+		
+		// Function Report
+		btnReport();
 
 		//Transaksi
 		btnTambahB();
@@ -521,6 +524,8 @@ public class Utama extends JFrame {
 				setVisible(false);
 				Masuk msk = new Masuk(".:: Login ::.");
 				msk.setVisible(true);
+				dispose();
+				msk.user = "";
 			}
 		});
 	}
@@ -615,6 +620,20 @@ public class Utama extends JFrame {
 				Restock_prod re = new Restock_prod(owner, "Restock Produk", ModalityType.APPLICATION_MODAL);
 				re.setVisible(true);
 				re.setLocationRelativeTo(null);
+			}
+		});
+	}
+	
+	//function button report
+	public void btnReport(){
+		rSales.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				Utama ut = new Utama("");
+				Report rp = new Report(ut, "Report Penjualan", ModalityType.APPLICATION_MODAL);
+				rp.setVisible(true);
 			}
 		});
 	}
@@ -745,7 +764,7 @@ public class Utama extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
 				Utama ut = new Utama("");
-				Bayar byr = new Bayar(ut, "Bayar Transaksi", ModalityType.APPLICATION_MODAL);
+				Bayar byr = new Bayar(ut, "Bayar Transaksi", ModalityType.APPLICATION_MODAL, lblNoTransaksi, lblNama2, table);
 				byr.setVisible(true);
 			}
 		});
@@ -810,6 +829,11 @@ public class Utama extends JFrame {
 							Object [] x = {txtKode.getText(),txtNamaB.getText(), txtHarga.getText(), txtJumlah.getText(), subTotal, "Edit", "Hapus"};
 							dataModel.addRow(x);
 							setTotal();
+							txtKode.grabFocus();
+							txtKode.setText("");
+							txtNamaB.setText("");
+							txtHarga.setText("");
+							txtJumlah.setText("");
 							if(table.getRowCount()==0){
 								btnBayar.setEnabled(false);
 							}
@@ -855,7 +879,7 @@ public class Utama extends JFrame {
 			super(owner, title);
 			super.setLocationRelativeTo(null);
 			super.setSize(500, 470);
-			super.setVisible(true);
+			//super.setVisible(true);
 
 			dataModel.addColumn("ID");
 			dataModel.addColumn("Nama Produk");
@@ -1309,10 +1333,16 @@ public class Utama extends JFrame {
 		private JLabel lblJam2 = new JLabel("");
 		
 		private JLabel lblTotal = new JLabel("Grand Total");
-		private JLabel lblTotal2 = new JLabel("");
+		public JLabel lblTotal2 = new JLabel("");
+		
+		private JLabel lblPaid = new JLabel("Bayar");
+		private JLabel lblPaid2 = new JLabel("");
+		
+		private JLabel lblKembalian = new JLabel("Kembali");
+		private JLabel lblKembalian2 = new JLabel("");
 		
 		private JLabel lblBayar = new JLabel("Masukkan Uang");
-		private JTextField txtBayar = new JTextField(15);
+		private JTextField txtBayar = new JTextField(10);
 		
 		
 		private DefaultTableModel dataModel = new DefaultTableModel() {
@@ -1328,8 +1358,10 @@ public class Utama extends JFrame {
 		private JPanel panelDetailT = new JPanel();
 		private Container kontainer2;
 		
+		private JButton btnPay = new JButton("Bayar");
+		
 
-		public Bayar(Utama owner, String title, ModalityType modal) {
+		public Bayar(Utama owner, String title, ModalityType modal, JLabel id, JLabel nama, JTable table1) {
 			
 			super(owner, title, modal);
 			super.setSize(500, 550);
@@ -1374,14 +1406,16 @@ public class Utama extends JFrame {
 			
 			c.gridx = 1;
 			c.gridy = 0;
+			lblIdTrans2.setText(id.getText());
 			panelTransaksi.add(lblIdTrans2,c);
 			
 			c.gridx = 0;
 			c.gridy = 1;
 			panelTransaksi.add(lblNama,c);
 			
-			c.gridx = 2;
+			c.gridx = 1;
 			c.gridy = 1;
+			lblNama2.setText(nama.getText());
 			panelTransaksi.add(lblNama2,c);
 			
 			c.gridx = 0;
@@ -1403,21 +1437,41 @@ public class Utama extends JFrame {
 			
 			c.fill = GridBagConstraints.HORIZONTAL;
 			c.insets = new Insets(10,10,10,10);
-			c.gridx = 0;
+			c.gridx = 2;
 			c.gridy = 0;
 			panelDialog.add(lblTotal,c);
 			
-			c.gridx = 1;
+			c.gridx = 3;
 			c.gridy = 0;
 			panelDialog.add(lblTotal2,c);
 			
-			c.gridx = 0;
+			c.gridx = 2;
 			c.gridy = 1;
+			panelDialog.add(lblPaid,c);
+			
+			c.gridx = 3;
+			c.gridy = 1;
+			panelDialog.add(lblPaid2,c);
+			
+			c.gridx = 2;
+			c.gridy = 2;
+			panelDialog.add(lblKembalian,c);
+
+			c.gridx = 3;
+			c.gridy = 2;
+			panelDialog.add(lblKembalian2,c);
+			
+			c.gridx = 0;
+			c.gridy = 2;
 			panelDialog.add(lblBayar,c);
 			
 			c.gridx = 1;
-			c.gridy = 1;
+			c.gridy = 2;
 			panelDialog.add(txtBayar,c);
+			
+			c.gridx = 1;
+			c.gridy = 3;
+			panelDialog.add(btnPay,c);
 			
 			
 			kontainer2.add(panelTransaksi);
@@ -1425,14 +1479,63 @@ public class Utama extends JFrame {
 			kontainer2.add(panelDialog);
 			
 			
-			
-			
+			setTable(table1, dataModel);
+			btnPaid();
 			
 		}
+		
+		public void setTable(JTable table1,  DefaultTableModel dataModel){
+			int totalx = 0;
+			for(int i = table1.getRowCount()-1; i > -1 ; i--){
+				Object [] x = {table1.getValueAt(i, 0).toString(),table1.getValueAt(i, 1).toString(), table1.getValueAt(i, 2).toString(),
+						table1.getValueAt(i, 3).toString(), table1.getValueAt(i, 4).toString()};
+				dataModel.addRow(x);
+				totalx += Integer.parseInt(table1.getValueAt(i, 4).toString());
+			}
+			lblTotal2.setText(""+totalx);
 
 	}
+		
+		public void btnPaid(){
+			btnPay.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent arg0) {
+					// TODO Auto-generated method stub
+					if(txtBayar.getText().equals("")){
+						JOptionPane.showMessageDialog(null, "Field Tidak Boleh Kosong!", "Error", JOptionPane.ERROR_MESSAGE);
+					}
+					else{
+						int total = Integer.parseInt(lblTotal2.getText());
+						int bayar = Integer.parseInt(txtBayar.getText());
+						if(bayar < total){
+							JOptionPane.showMessageDialog(null, "Uang yang Anda masukkan kurang!", "Error!", JOptionPane.ERROR_MESSAGE);
+						}
+						else{
+							int totalz = Integer.parseInt(lblTotal2.getText());
+							int bayarz = Integer.parseInt(txtBayar.getText());
+							int akhir = bayarz - totalz;
+							btnPay.setVisible(false);
+							lblBayar.setVisible(false);
+							txtBayar.setVisible(false);
+							panelDialog.setBorder(BorderFactory.createTitledBorder("Pembayaran"));
+							lblPaid2.setText(""+bayarz);
+							lblKembalian2.setText(""+akhir);
+							trans.addTransaksi(lblIdTrans2, lblNama2, lblTgl2, lblJam2);
+							dtrans.addDTransaksi(lblIdTrans2, table);
+						}
+					}
+				}
+			});
+		}
+		
+		
 	
 	//Time
+	
+
+		
+	}
 	
 	public class JLabelTime extends JLabel implements ActionListener {
 		 
