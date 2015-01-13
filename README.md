@@ -1,5 +1,5 @@
 #Toko Obat
-<br/> Toko Obat is Point Of Sales application made with JAVA. This application used <b> Mckoi DB </b> as DBMS (Database Management System)<br/>
+<br/> Toko Obat is a Drug Store Point Of Sales application made with JAVA. This application used <b> Mckoi DB </b> as DBMS (Database Management System)<br/>
 <br/> You can edit this source code application with ECLIPSE latest version.
 <br/> For more information, you can contact me via :
 * mail : andhikamaheva@gmail.com
