@@ -41,7 +41,7 @@ $ cd directoryName/mckoidb
 ```sh
 $ java -jar mckoidb.jar
 ```
-in this case your <b>Mckoi DB</b> was running<br/>
+When <b>Mckoi DB</b> is running :<br/>
 ```sh
 Mckoi SQL Database ( 1.0.6 )
 Copyright (C) 2000 - 2013 Diehl and Associates, Inc.  All rights reserved.
@@ -54,4 +54,6 @@ TCP JDBC Server (multi_threaded) on port: 9157.
 Boot time: 1552ms.
 ```
 Don't close your CMD when <b>Mckoi DB</b> is running. :)
+
+#Configure DB With Code
 
